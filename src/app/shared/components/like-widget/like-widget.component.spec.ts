@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
+import { LikeWidgetComponent } from './like-widget.component';
 import { LikeWidgetModule } from './like-widget.module';
-import { LikeWidgetComponent } from "./like-widget.component";
 
 describe(LikeWidgetComponent.name, () => {
   let fixture: ComponentFixture<LikeWidgetComponent> = null;
@@ -20,26 +19,31 @@ describe(LikeWidgetComponent.name, () => {
     expect(component).toBeTruthy();
   });
 
-  // it('Should auto generate ID when id input property is missing', () => {
-  //   const component = fixture.componentInstance;
-  //   fixture.detectChanges();
-  //   expect(component.id).toBeTruthy();
-  // });
+  it('Should auto-generate ID during ngOnInit when (@Input id) is not assigned', () => {
+    fixture.detectChanges();
+    expect(component.id).toBeTruthy();
+  });
 
-  it('Should NOT generate ID when id input property is present', () => {
+  it('Should NOT auto-generate ID during ngOnInit when (@Input id) is assigned', () => {
     const someId = 'someId';
     component.id = someId;
     fixture.detectChanges();
     expect(component.id).toBe(someId);
   });
+  
+  // it(`#${LikeWidgetComponent.prototype.like.name} Should trigger emission when called`, done => {
+  //   fixture.detectChanges();
+  //   component.liked.subscribe(() => {
+  //     expect(true).toBeTruthy();
+  //     done();
+  //   });
+  //   component.like();
+  // });
 
-  it(`#${LikeWidgetComponent.prototype.like.name} Should trigger emission when called`, done => {
-    fixture.detectChanges();
-    component.liked.subscribe(() => {
-      expect(true).toBeTruthy();
-      done();
-    });
-    component.like();
+  it(`#${LikeWidgetComponent.prototype.like.name} should trigger (@Output liked) when called`, () => {
+      spyOn(component.liked, 'emit');
+      fixture.detectChanges();
+      component.like();
+      expect(component.liked.emit).toHaveBeenCalled();
   });
-
 });
